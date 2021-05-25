@@ -2,7 +2,9 @@ package com.example.apirest.controller.form;
 
 import com.example.apirest.modelo.Curso;
 import com.example.apirest.modelo.Topico;
+import com.example.apirest.modelo.Usuario;
 import com.example.apirest.repository.CursoRepository;
+import com.example.apirest.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +25,9 @@ public class TopicoForm {
     private String nomeCurso;
 
 
-    public Topico converter(CursoRepository cursoRepository) {
+    public Topico converter(CursoRepository cursoRepository, UsuarioRepository usuarioRepository) {
         Curso curso = cursoRepository.findByNome(nomeCurso);
-        return new Topico(titulo, mensagem, curso);
+        Usuario usuario = usuarioRepository.findByNome("Aluno");
+        return new Topico(titulo, mensagem, curso, usuario);
     }
 }

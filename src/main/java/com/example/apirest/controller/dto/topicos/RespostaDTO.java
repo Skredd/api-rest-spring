@@ -1,4 +1,4 @@
-package com.example.apirest.controller.dto;
+package com.example.apirest.controller.dto.topicos;
 
 import com.example.apirest.modelo.Resposta;
 import lombok.Data;

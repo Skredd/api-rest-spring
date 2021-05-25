@@ -1,4 +1,4 @@
-package com.example.apirest.controller.dto;
+package com.example.apirest.controller.dto.topicos;
 
 import com.example.apirest.modelo.StatusTopico;
 import com.example.apirest.modelo.Topico;

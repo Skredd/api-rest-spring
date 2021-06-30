@@ -9,6 +9,8 @@ import com.example.apirest.repository.CursoRepository;
 import com.example.apirest.repository.TopicoRepository;
 import com.example.apirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,11 +32,13 @@ public class TopicosController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public ResponseEntity<List<TopicoDTO>> lista(String nomeCurso) {
+    public ResponseEntity<Page<TopicoDTO>> list(@RequestParam(required = false) String nomeCurso, Pageable paginacao) {
+        // Posso fazer usar "@PageableDefault() Pageable pagination" para definir valores padroes
+
         if (nomeCurso == null) {
-            return ResponseEntity.ok(TopicoDTO.converter(topicoRepository.findAll()));
+            return ResponseEntity.ok(TopicoDTO.converter(topicoRepository.findAll(paginacao)));
         }
-        return ResponseEntity.ok(TopicoDTO.converter(topicoRepository.findByCursoNome(nomeCurso)));
+        return ResponseEntity.ok(TopicoDTO.converter(topicoRepository.findByCursoNome(nomeCurso, paginacao)));
     }
 
     @PostMapping

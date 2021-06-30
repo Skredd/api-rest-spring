@@ -9,6 +9,8 @@ import com.example.apirest.repository.CursoRepository;
 import com.example.apirest.repository.TopicoRepository;
 import com.example.apirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ public class TopicosController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping
+    @Cacheable(value = "listTopics")
     public ResponseEntity<Page<TopicoDTO>> list(@RequestParam(required = false) String nomeCurso, Pageable paginacao) {
         // Posso fazer usar "@PageableDefault() Pageable pagination" para definir valores padroes
 
@@ -42,6 +45,7 @@ public class TopicosController {
     }
 
     @PostMapping
+    @CacheEvict(value = "listTopics", allEntries = true)
     public ResponseEntity<TopicoDTO> create(@RequestBody @Valid TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
         var topico = topicoForm.converter(cursoRepository, usuarioRepository);
         topicoRepository.save(topico);
@@ -61,6 +65,7 @@ public class TopicosController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "listTopics", allEntries = true)
     public ResponseEntity<TopicoDTO> update(@PathVariable("id") Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
         Optional<Topico> optional = topicoRepository.findById(id);
         if (optional.isPresent()) {
@@ -70,7 +75,8 @@ public class TopicosController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
+    @CacheEvict(value = "listTopics", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Topico> optional = topicoRepository.findById(id);
         if (optional.isPresent()) {
